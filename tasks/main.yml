@@ -1,0 +1,89 @@
+---
+- name: "Install dependencies as root: {{ APP_DEPENDENCIES | join(' ') }}"
+  package:
+    name: "{{ APP_DEPENDENCIES }}"
+  become: true
+  register: INSTALL_DEPENDENCIES
+  ignore_errors: true
+- name: "Install dependencies as user {{ APP_USER }}: {{ APP_DEPENDENCIES | join(' ') }}"
+  shell: "pkcon install -y {{ item }} | true"
+  loop: "{{ APP_DEPENDENCIES }}"
+  when: INSTALL_DEPENDENCIES.failed
+- name: "Create the directory {{ APP_SRC }}"
+  file:
+    name: "{{ APP_SRC }}"
+    state: directory
+    owner: "{{ APP_USER }}"
+  become: "{{ APP_ROOT }}"
+- name: "Create the directory {{ APP_ASSETS_SRC }}"
+  file:
+    name: "{{ APP_ASSETS_SRC }}"
+    state: directory
+    owner: "{{ APP_USER }}"
+  become: "{{ APP_ROOT }}"
+- name: "Check for the README file {{ APP_README }}"
+  stat:
+    path: "{{ APP_README }}"
+  register: APP_README_PATH
+- name: "Clone the {{ APP_REPO_SSH }} source code into {{ APP_SRC }}"
+  ansible.builtin.git:
+    repo: "{{ APP_REPO_SSH }}"
+    dest: "{{ APP_SRC }}"
+    version: "{{ APP_TAG }}"
+  ignore_errors: true
+  when: not APP_README_PATH.stat.exists
+  register: CLONE_REPO
+- name: "Clone the {{ APP_REPO_HTTPS }} source code into {{ APP_SRC }}"
+  ansible.builtin.git:
+    repo: "{{ APP_REPO_HTTPS }}"
+    dest: "{{ APP_SRC }}"
+    version: "{{ APP_TAG }}"
+  when: not APP_README_PATH.stat.exists and CLONE_REPO.failed
+  #- name: "Clone the stk-assets source code into {{ APP_ASSETS_SRC }}"
+  #  ansible.builtin.subversion:
+  #    repo: "{{ APP_ASSETS_REPO }}"
+  #    dest: "{{ APP_ASSETS_SRC }}"
+  #  ignore_errors: true
+  #- name: "Run the svn cleanup in case subversion failed"
+  #  shell:
+  #    cmd: svn cleanup
+  #    chdir: "{{ APP_ASSETS_SRC }}"
+  #  ignore_errors: true
+  #- name: "Clone the stk-assets source code into {{ APP_ASSETS_SRC }}"
+  #  ansible.builtin.subversion:
+  #    repo: "{{ APP_ASSETS_REPO }}"
+  #    dest: "{{ APP_ASSETS_SRC }}"
+  #  ignore_errors: true
+  #- name: "Run the svn cleanup in case subversion failed"
+  #  shell:
+  #    cmd: svn cleanup
+  #    chdir: "{{ APP_ASSETS_SRC }}"
+  #  ignore_errors: true
+  #- name: "Clone the stk-assets source code into {{ APP_ASSETS_SRC }}"
+  #  ansible.builtin.subversion:
+  #    repo: "{{ APP_ASSETS_REPO }}"
+  #    dest: "{{ APP_ASSETS_SRC }}"
+  #  ignore_errors: true
+- name: "Create the directory {{ APP_SRC }}/cmake_build"
+  file:
+    name: "{{ APP_SRC }}/cmake_build"
+    state: directory
+- name: "Run the cmake script in {{ APP_SRC }}/cmake_build: cmake ..  -DBUILD_RECORDER=0 -DCMAKE_INSTALL_PREFIX={{ APP_PREFIX }}"
+  shell:
+    cmd: "cmake ..  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX={{ APP_PREFIX }}"
+    chdir: "{{ APP_SRC }}/cmake_build"
+- name: "Run the make script in {{ APP_SRC }}/cmake_build"
+  shell:
+    cmd: make
+    chdir: "{{ APP_SRC }}/cmake_build"
+- name: "Run the make install script in {{ APP_SRC }}/cmake_build"
+  shell:
+    cmd: make install
+    chdir: "{{ APP_SRC }}/cmake_build"
+  become: "{{ APP_ROOT }}"
+- name: "Create the launcher {{ APP_DESKTOP }}"
+  template:
+    src: app.desktop
+    dest: "{{ APP_DESKTOP }}"
+  become: "{{ APP_ROOT }}"
+

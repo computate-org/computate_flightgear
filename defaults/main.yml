@@ -1,0 +1,27 @@
+---
+APP_PYTHON: "{{ '/usr/bin/python' if lookup('file', '/usr/bin/python', errors='ignore') else '/usr/bin/python3' }}"
+APP_DEPENDENCIES_REDHAT:
+  - cmake
+  - gcc-c++
+APP_DEPENDENCIES: "{{ APP_DEPENDENCIES_REDHAT if ansible_distribution_file_variety == 'RedHat' else APP_DEPENDENCIES_REDHAT }}"
+APP_NAME: flightgear
+APP_DISPLAY_NAME: Flight Gear
+APP_GENERIC_NAME: Flight Gear Simulator
+APP_COMMENT: Flight simulator
+APP_USER: "{{ lookup('env', 'USER') }}"
+APP_PREFIX: "/home/{{ APP_USER }}/.local"
+APP_ROOT: "{{ false if APP_PREFIX is regex('^/home') else true }}"
+APP_SRC: "{{ APP_PREFIX }}/src/stk-code"
+APP_ASSETS_SRC: "{{ APP_PREFIX }}/src/stk-assets"
+APP_SHARE: "{{ APP_PREFIX }}/share/{{ APP_NAME  }}"
+APP_REPO_SSH: git@github.com:FlightGear/flightgear.git
+APP_REPO_HTTPS: "{{ APP_REPO_SSH | replace('git@github.com:', 'https://github.com/') }}"
+APP_ASSETS_REPO: https://svn.code.sf.net/p/supertuxkart/code/stk-assets
+APP_TAG: version/2020.3.11
+APP_DESKTOP: "{{ APP_PREFIX }}/.local/share/applications/{{ APP_NAME }}.desktop"
+APP_README: "{{ APP_SRC }}/README.md"
+APP_ICON: "{{ APP_SHARE }}/data/supertuxkart_1024.png"
+APP_EXEC: "{{ APP_PREFIX }}/bin/supertuxkart"
+APP_KEYWORDS: "capture;flag;tank;game;multiplayer;network;"
+APP_CATEGORIES: "Game;ActionGame;"
+
