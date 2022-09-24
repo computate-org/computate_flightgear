@@ -1,4 +1,10 @@
 ---
+#- include_role:
+#    name: computate.computate_osg
+#- include_role:
+#    name: computate.computate_plib
+#- include_role:
+#    name: computate.computate_simgear
 - name: "Install dependencies as root: {{ APP_DEPENDENCIES | join(' ') }}"
   package:
     name: "{{ APP_DEPENDENCIES }}"
@@ -72,18 +78,13 @@
   shell:
     cmd: "cmake ..  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX={{ APP_PREFIX }}"
     chdir: "{{ APP_SRC }}/cmake_build"
-- name: "Run the make script in {{ APP_SRC }}/cmake_build"
+- name: "Run the make script in {{ APP_SRC }}/cmake_build: make -j $(nproc)"
   shell:
-    cmd: make
+    cmd: make -j $(nproc)
     chdir: "{{ APP_SRC }}/cmake_build"
-- name: "Run the make install script in {{ APP_SRC }}/cmake_build"
+- name: "Run the make install script in {{ APP_SRC }}/cmake_build: make install -j $(nproc)"
   shell:
-    cmd: make install
+    cmd: make install  -j $(nproc)
     chdir: "{{ APP_SRC }}/cmake_build"
-  become: "{{ APP_ROOT }}"
-- name: "Create the launcher {{ APP_DESKTOP }}"
-  template:
-    src: app.desktop
-    dest: "{{ APP_DESKTOP }}"
   become: "{{ APP_ROOT }}"
 

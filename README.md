@@ -1,3 +1,10 @@
+
+# Install the prerequisite applications
+
+- https://github.com/computate-org/computate_osg
+- https://github.com/computate-org/computate_plib
+- https://github.com/computate-org/computate_simgear
+
 # Install flightgear
 
 ## Install the latest Python and setup a new Python virtualenv
