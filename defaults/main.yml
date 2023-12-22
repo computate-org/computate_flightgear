@@ -4,6 +4,8 @@ APP_DEPENDENCIES_REDHAT:
   - cmake
   - gcc-c++
   - libevent-devel
+  - OpenSceneGraph-devel
+  - OpenSceneGraph
 APP_DEPENDENCIES: "{{ APP_DEPENDENCIES_REDHAT if ansible_distribution_file_variety == 'RedHat' else APP_DEPENDENCIES_REDHAT }}"
 APP_NAME: flightgear
 APP_DISPLAY_NAME: Flight Gear
