@@ -6,6 +6,12 @@ APP_DEPENDENCIES_REDHAT:
   - libevent-devel
   - OpenSceneGraph-devel
   - OpenSceneGraph
+  - freetype-devel
+  - libjpeg-turbo-devel
+  - giflib-devel
+  - libtiff-devel
+  - libpng-devel
+  - qt5-devel
 APP_DEPENDENCIES: "{{ APP_DEPENDENCIES_REDHAT if ansible_distribution_file_variety == 'RedHat' else APP_DEPENDENCIES_REDHAT }}"
 APP_NAME: flightgear
 APP_DISPLAY_NAME: Flight Gear
@@ -15,15 +21,15 @@ APP_USER: "{{ lookup('env', 'USER') }}"
 APP_PREFIX: "/home/{{ APP_USER }}/.local"
 APP_ROOT: "{{ false if APP_PREFIX is regex('^/home') else true }}"
 APP_SRC: "{{ APP_PREFIX }}/src/flightgear"
-APP_ASSETS_SRC: "{{ APP_PREFIX }}/src/stk-assets"
+APP_ASSETS_SRC: "{{ APP_PREFIX }}/lib/FlightGear"
 APP_SHARE: "{{ APP_PREFIX }}/share/{{ APP_NAME  }}"
 APP_REPO_SSH: git@github.com:FlightGear/flightgear.git
 APP_REPO_HTTPS: "{{ APP_REPO_SSH | replace('git@github.com:', 'https://github.com/') }}"
 APP_TAG: version/2020.3.11
-APP_DESKTOP: "{{ APP_PREFIX }}/share/applications/{{ APP_NAME }}.desktop"
+APP_DESKTOP: "{{ APP_PREFIX }}/share/applications/org.flightgear.FlightGear.desktop"
 APP_README: "{{ APP_SRC }}/README.md"
-APP_ICON: "{{ APP_SHARE }}/data/supertuxkart_1024.png"
-APP_EXEC: "{{ APP_PREFIX }}/bin/supertuxkart"
+APP_ICON: "flightgear"
+APP_EXEC: "fgfs --launcher --enable-terrasync --timeofday=morning --enable-fullscreen"
 APP_KEYWORDS: "flight;simulator;game;multiplayer;network;"
 APP_CATEGORIES: "Game;ActionGame;"
 

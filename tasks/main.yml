@@ -45,7 +45,7 @@
     dest: "{{ APP_SRC }}"
     version: "{{ APP_TAG }}"
   when: not APP_README_PATH.stat.exists and CLONE_REPO.failed
-  #- name: "Clone the stk-assets source code into {{ APP_ASSETS_SRC }}"
+  #- name: "Clone the fgdata source code into {{ APP_ASSETS_SRC }}"
   #  ansible.builtin.subversion:
   #    repo: "{{ APP_ASSETS_REPO }}"
   #    dest: "{{ APP_ASSETS_SRC }}"
@@ -87,4 +87,10 @@
     cmd: make install  -j $(nproc)
     chdir: "{{ APP_SRC }}/cmake_build"
   become: "{{ APP_ROOT }}"
-
+- name: "Create the launcher {{ APP_DESKTOP }}"
+  template:
+    src: app.desktop
+    dest: "{{ APP_DESKTOP }}"
+- name: "Download FlightGear data"
+  debug:
+    msg: Download the  data from https://sourceforge.net/projects/flightgear/files/release-2020.3/ and extract it into {{ APP_ASSETS_SRC }}. 
