@@ -1,7 +1,6 @@
 
 # Install the prerequisite applications
 
-- https://github.com/computate-org/computate_osg
 - https://github.com/computate-org/computate_plib
 - https://github.com/computate-org/computate_simgear
 
