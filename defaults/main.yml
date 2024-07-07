@@ -28,7 +28,7 @@ APP_REPO_HTTPS: "{{ APP_REPO_SSH | replace('git@github.com:', 'https://github.co
 APP_TAG: version/2020.3.11
 APP_DESKTOP: "{{ APP_PREFIX }}/share/applications/org.flightgear.FlightGear.desktop"
 APP_README: "{{ APP_SRC }}/README.md"
-APP_ICON: "flightgear"
+APP_ICON: "{{ APP_PREFIX }}/share/icons/hicolor/128x128/apps/flightgear.png"
 APP_EXEC: "fgfs --launcher --enable-terrasync --timeofday=morning --enable-fullscreen"
 APP_KEYWORDS: "flight;simulator;game;multiplayer;network;"
 APP_CATEGORIES: "Game;ActionGame;"
